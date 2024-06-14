@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 require('dotenv').config();
 
+// ________________ Database ________________
+require('./db/mongoDB');
+
 // ________________ Environments Variables ________________
 const PORT = process.env.PORT || 5000;
 
@@ -29,5 +32,5 @@ app.get('/', (req, res, next) => {
 
 // // ________________ Server ________________
 app.listen(PORT, ()=> {
-    console.log(`Listin on port ${PORT}`)
+    console.log(`Listing on port ${PORT}`)
 })
