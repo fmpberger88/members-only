@@ -39,4 +39,6 @@ passport.deserializeUser( async (id, done) => {
     } catch(err) {
         done(new Error('Authentication failed'));
     }
-})
+});
+
+module.exports = passport;

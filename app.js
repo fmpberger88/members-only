@@ -1,12 +1,11 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-const mongoose = require('mongoose');
 const helmet = require('helmet');
 const session = require('express-session');
-const passport = require('middlewares/passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
+const passport = require('./middlewares/passport');
+const errorHandler = require('./middlewares/errorHandler');
+const ensureAuthenticated = require('./middlewares/ensureAuthenticated');
 require('dotenv').config();
 
 // ________________ Database ________________
@@ -47,8 +46,23 @@ app.use(passport.session());
 
 // ________________ Routes ________________
 app.get('/', (req, res, next) => {
+    console.log("Environment:", req.app.get('env'));
     res.send("Hello World!");
 })
+
+// Custom 401 Unauthorized Middleware
+app.get('/protected', ensureAuthenticated, (req, res, next) => {
+    res.send('You are logged in!');
+});
+
+// ________________ ErrorHandler ________________
+// Custom 404 Middleware
+app.use((req, res, next) => {
+    res.status(404).render('404', { title: '404 - Page Not Found' });
+});
+
+// General Error Handling Middleware
+app.use(errorHandler);
 
 // // ________________ Server ________________
 app.listen(PORT, ()=> {
