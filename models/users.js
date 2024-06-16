@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, 'Email is required'],
-        unique: [true, 'Email is unique'],
+        unique: true,
         lowercase: true,
         trim: true,
         validate: {
@@ -17,14 +17,26 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minlength: [8, 'Password must be at least 6 characters'],
+        minlength: [8, 'Password must be at least 8 characters'],
+    },
+    first_name: {
+        type: String,
+        required: [true, 'First name is required'],
+        trim: true,
+        maxlength: [100, 'First name cannot exceed 100 characters']
+    },
+    family_name: {
+        type: String,
+        required: [true, 'Family name is required'],
+        trim: true,
+        maxlength: [100, 'Family name cannot exceed 100 characters']
     },
     isAdmin: {
         type: Boolean,
         default: false,
     }
 }, {
-    timestamps: true
+    timestamps: true // Automatically creates createdAt and updatedAt fields
 });
 
 module.exports = mongoose.model('User', userSchema);
