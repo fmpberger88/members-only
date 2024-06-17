@@ -65,8 +65,7 @@ app.use(helmet());
 // ________________ Redis Store ________________
 // Initialize client.
 let redisClient = createClient({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
+    url: process.env.REDIS_URL
 });
 
 redisClient.connect().catch(console.error)
