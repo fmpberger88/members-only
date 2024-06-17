@@ -4,6 +4,8 @@ const { body, validationResult } = require('express-validator');
 const logger = require('morgan');
 const User = require('./models/users');
 const helmet = require('helmet');
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: false })
 const bcrypt = require('bcrypt')
 const session = require('express-session');
 const passport = require('./middlewares/passport');
@@ -58,6 +60,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
+
 // ________________ Express Session ________________
 app.use(session({
     secret: process.env.SECRET_KEY,
@@ -65,8 +68,9 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_HENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 30 * 60 * 60 * 1000,
+        sameSite: 'Strict'
     }
 }));
 
@@ -81,22 +85,21 @@ app.use((req, res, next) => {
 });
 
 // Middleware to log authentication status
+/*
 app.use((req, res, next) => {
     console.log('Is Authenticated:', req.isAuthenticated());
     console.log('User:', req.user);
     next();
 });
-
-
-
+ */
 
 // ________________ Routes ________________
 
 app.use('/', messagesRouter);
 
 // Login Route
-app.get('/log-in', (req, res) => {
-    res.render('login');
+app.get('/log-in', csrfProtection, (req, res) => {
+    res.render('login', { csrfToken: req.csrfToken });
 })
 
 app.post(
@@ -108,11 +111,11 @@ app.post(
 );
 
 // Sign-Up Routes
-app.get("/sign-up", (req, res) => {
-    res.render('sign-up')
+app.get("/sign-up", csrfProtection, (req, res) => {
+    res.render('sign-up', { csrfToken: req.csrfToken() })
 });
 
-app.post('/sign-up', [
+app.post('/sign-up', csrfProtection, [
     body('email', 'Enter a valid email address').isEmail().normalizeEmail(),
     body('password', 'Password must be at least 8 characters long').isLength({ min: 8 }),
     body('confirm_password', 'Passwords do not match').custom((value, { req }) => value === req.body.password)
@@ -130,7 +133,8 @@ app.post('/sign-up', [
         return res.status(400).render('sign-up', {
             title: 'Sign Up',
             errors: formattedErrors,
-            data: req.body // Send back the input data so the user doesn't need to re-enter it
+            data: req.body, // Send back the input data so the user doesn't need to re-enter it
+            csrfToken: req.csrfToken()
         });
     }
 
@@ -168,6 +172,16 @@ app.get('/protected', ensureAuthenticated, (req, res, next) => {
 });
 
 // ________________ ErrorHandler ________________
+// CSRF ErrorHandler
+app.use(function (err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err);
+
+    // handle CSRF token errors here
+    res.status(403);
+    res.send('form tampered with');
+});
+
+
 // Custom 404 Middleware
 app.use((req, res, next) => {
     res.status(404).render('404', { title: '404 - Page Not Found' });
