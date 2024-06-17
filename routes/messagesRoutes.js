@@ -1,7 +1,8 @@
 const express = require('express')
 const messagesRouter = express.Router()
 const Messages = require('../models/messages');
-const User = require('../models/users');
+const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+const isAdmin = require('../middlewares/isAdmin');
 const { body, validationResult } = require('express-validator');
 
 
@@ -17,7 +18,7 @@ messagesRouter.get('/', async (req, res, next) => {
     }
 });
 
-messagesRouter.post('/new', [
+messagesRouter.post('/new', ensureAuthenticated, [
     body('text', "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
