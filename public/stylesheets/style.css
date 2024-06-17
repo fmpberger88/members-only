@@ -2,18 +2,25 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #333;
+    background-color: #111;
     font-family: Verdana, sans-serif;
+    color: yellowgreen;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 1rem;
 }
 
 header {
     display: flex;
+    flex-wrap: wrap;
     padding: 4rem;
     color: steelblue;
     font-weight: bold;
     font-size: 2rem;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 2rem;
 }
 
 header nav a {
@@ -30,7 +37,32 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 60vh;
+}
+
+.messageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 5px;
+    margin-top: 2rem;
+}
+
+.messageCard {
+    display: flex;
+    flex-direction: column;
+    background-color: steelblue;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.messageCard p {
+    background-color: steelblue;
+    color: black;
+}
+
+.messageCard small {
+    background-color: steelblue;
+    color: black;
 }
 
 form {
@@ -52,6 +84,14 @@ form div label {
     margin-bottom: 0.5rem;
 }
 
+form div input {
+    width: 100%;
+    background-color: steelblue;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
 button {
     background-color: steelblue;
     color: white;
@@ -60,6 +100,7 @@ button {
     border-radius: 0.25rem;
     cursor: pointer;
     font-weight: bold;
+    margin: 2rem;
 }
 
 footer {
@@ -71,11 +112,74 @@ footer {
     color: steelblue;
 }
 
-footer a {
-    text-decoration: none;
+a {
+    color: yellowgreen;
 }
 
-footer a:hover {
-    text-decoration: steelblue;
+a:hover {
+    color: darkviolet;
 }
 
+/* Existing styles above remain unchanged */
+
+/* Responsive Styles for screens less than or equal to 600px */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        padding: 2rem; /* Reduced padding for smaller screens */
+        align-items: flex-start; /* Align items to the start */
+    }
+
+    header nav a {
+        margin-bottom: 1rem; /* Add space between navigation links */
+        font-size: 1.2rem;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 1.5rem; /* Smaller headings on smaller screens */
+    }
+
+    main {
+        padding: 1rem; /* Less padding in main area */
+    }
+
+    .messageContainer {
+        width: 100%; /* Full width to use space efficiently */
+        padding: 1rem; /* Padding to prevent text touching the edges */
+    }
+
+    .messageCard {
+        padding: 0.5rem; /* Reduced padding in message cards */
+    }
+
+    form div input, textarea {
+        padding: 0.25rem; /* Smaller padding in form inputs */
+    }
+
+    button {
+        padding: 0.5rem; /* Smaller buttons */
+    }
+
+    footer {
+        padding: 2rem; /* Less padding in the footer */
+    }
+
+    form {
+        width: 80%; /* Form takes full width */
+    }
+}
+
+/* Additional considerations for smaller devices */
+@media (max-width: 360px) {
+    header {
+        padding: 1rem; /* Even smaller padding for very small devices */
+    }
+
+    header nav a {
+        font-size: 0.8rem; /* Smaller font size for nav links */
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 1.2rem; /* Even smaller headings */
+    }
+}
