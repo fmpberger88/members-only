@@ -1,7 +1,20 @@
 <h1>Messages</h1>
-{{#each messages}}
-    <div>
-        <p>{{this.text}}</p>
-        <small>Added on {{dateFormat this.added "fullDate"}}</small>
-    </div>
-{{/each}}
+{{#unless user}}
+    <p>Please <a href="/log-in">Login</a> to view details about who posted these messages and when they were added.</p>
+{{else}}
+    <form action="/new" method="POST">
+        <textarea id="text" name="text" placeholder="Your message..." aria-label="message textarea input" required></textarea>
+        <button type="submit">Add your Message</button>
+    </form>
+{{/unless}}
+<div class="messageContainer">
+    {{#each messages}}
+        <div class="messageCard">
+            <p>{{this.text}}</p>
+            {{#if ../user}} <!-- Access the parent context to check for a logged-in user -->
+                <small>By {{this.user.name}}</small>
+                <small>Added on {{formatDate this.added}}</small>
+            {{/if}}
+        </div>
+    {{/each}}
+</div>
