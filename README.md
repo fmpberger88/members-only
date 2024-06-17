@@ -64,6 +64,7 @@ A simple message board application built with Node.js, Express, MongoDB, RedisSt
 
 - [express](https://expressjs.com/) - Fast, unopinionated, minimalist web framework for Node.js.
 - [mongoose](https://mongoosejs.com/) - Elegant MongoDB object modeling for Node.js.
+- [connect-redis](https://www.npmjs.com/package/connect-redis) connect-redis provides Redis session storage for Express.
 - [express-handlebars](https://github.com/ericf/express-handlebars) - A Handlebars view engine for Express.
 - [express-validator](https://express-validator.github.io/docs/) - Express middleware for validation of incoming requests.
 - [dotenv](https://github.com/motdotla/dotenv) - Loads environment variables from a `.env` file.
