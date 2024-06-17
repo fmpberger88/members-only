@@ -8,6 +8,7 @@
         <label for="password">Password</label>
         <input id="password" name="password" type="password" />
     </div>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">  <!-- CSRF Token hinzugefügt -->
     <button>Log In</button>
 </form>
 <p>If you don't have an accout yet? Please <a href="/sign-up">sign up!</a></p>

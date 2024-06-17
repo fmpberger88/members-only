@@ -4,21 +4,23 @@ const Messages = require('../models/messages');
 const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
 const isAdmin = require('../middlewares/isAdmin');
 const { body, validationResult } = require('express-validator');
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: false })
 
 
-messagesRouter.get('/', async (req, res, next) => {
+messagesRouter.get('/', csrfProtection, async (req, res, next) => {
     try {
         const messages = await Messages.find({})
             .populate('user')
             .exec();
 
-        res.render('index', { title: 'Message Board', messages: messages, user: req.user });
+        res.render('index', { title: 'Message Board', messages: messages, user: req.user, csrfToken: req.csrfToken() });
     } catch (err) {
         next(err);
     }
 });
 
-messagesRouter.post('/new', ensureAuthenticated, [
+messagesRouter.post('/new', ensureAuthenticated, csrfProtection, [
     body('text', "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
@@ -35,7 +37,8 @@ messagesRouter.post('/new', ensureAuthenticated, [
             return res.render('index', {
                 title: 'Message Board',
                 messages: messages,
-                errors: errors.array()
+                errors: errors.array(),
+                csrfToken: req.csrfToken()
             });
         }
 
@@ -52,5 +55,14 @@ messagesRouter.post('/new', ensureAuthenticated, [
         }
     }
 ]);
+
+messagesRouter.post('/delete/:id', ensureAuthenticated, isAdmin, async (req, res, next) => {
+    try {
+       await Messages.findByIdAndDelete(req.params.id);
+       res.redirect('/');
+    } catch(err) {
+        next(err);
+    }
+})
 
 module.exports = messagesRouter;

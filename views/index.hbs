@@ -4,6 +4,7 @@
 {{else}}
     <form action="/new" method="POST">
         <textarea id="text" name="text" placeholder="Your message..." aria-label="message textarea input" required></textarea>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">  <!-- CSRF Token hinzugefügt -->
         <button type="submit">Add your Message</button>
     </form>
 {{/unless}}
@@ -14,6 +15,12 @@
             {{#if ../user}} <!-- Access the parent context to check for a logged-in user -->
                 <small>By {{this.user.name}}</small>
                 <small>Added on {{formatDate this.added}}</small>
+            {{/if}}
+            {{#if ../user.isAdmin}}
+                <form action="/delete/{{this._id}}" method="POST">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    <button type="submit" style="background-color: red">Delete</button>
+                </form>
             {{/if}}
         </div>
     {{/each}}

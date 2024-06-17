@@ -29,6 +29,7 @@
             <div style="color: red;">{{errors.confirm_password}}</div>
         {{/if}}
     </div>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">  <!-- CSRF Token hinzugefügt -->
     <button type="submit">Sign Up</button>
 </form>
 <p>Already have an account? <a href="/login">Log In</a></p>
