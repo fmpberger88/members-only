@@ -10,6 +10,7 @@ const passport = require('./middlewares/passport');
 const errorHandler = require('./middlewares/errorHandler');
 const ensureAuthenticated = require('./middlewares/ensureAuthenticated');
 const { engine } = require('express-handlebars');
+const messagesRouter = require('./routes/messagesRoutes');
 require('dotenv').config();
 
 // ________________ Database ________________
@@ -29,15 +30,12 @@ app.engine('hbs', engine({
     defaultLayout: 'layout',
     layoutsDir: path.join(__dirname, 'views/layouts'),
     helpers: {
-        formatDate: function (date) {
-            return new Intl.DateTimeFormat('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }).format(date);
+        formatDate: function (date, format) {
+            const dateFormat = {
+                'fullDate': { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' },
+                'shortDate': { year: 'numeric', month: 'short', day: 'numeric' }
+            };
+            return new Intl.DateTimeFormat('en-US', dateFormat[format] || dateFormat['shortDate']).format(date);
         }
     },
     runtimeOptions: {
@@ -45,6 +43,7 @@ app.engine('hbs', engine({
         allowProtoMethodsByDefault: true,
     }
 }));
+
 
 
 app.set('view engine', 'hbs');
@@ -93,10 +92,7 @@ app.use((req, res, next) => {
 
 // ________________ Routes ________________
 
-app.get('/', (req, res, next) => {
-    console.log("Environment:", req.app.get('env'));
-    res.render('index', { title: 'Home' , user: req.user}); // Use .render to use Handlebars
-});
+app.use('/', messagesRouter);
 
 // Login Route
 app.get('/log-in', (req, res) => {
