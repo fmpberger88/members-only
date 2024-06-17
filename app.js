@@ -13,6 +13,8 @@ const errorHandler = require('./middlewares/errorHandler');
 const ensureAuthenticated = require('./middlewares/ensureAuthenticated');
 const { engine } = require('express-handlebars');
 const messagesRouter = require('./routes/messagesRoutes');
+const { createClient } = require('redis');
+const RedisStore = require('connect-redis').default
 require('dotenv').config();
 
 // ________________ Database ________________
@@ -60,9 +62,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
+// ________________ Redis Store ________________
+// Initialize client.
+let redisClient = createClient({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
+});
+
+redisClient.connect().catch(console.error)
 
 // ________________ Express Session ________________
 app.use(session({
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
