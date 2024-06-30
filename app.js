@@ -166,7 +166,7 @@ app.post('/sign-up', csrfProtection, [
 
 
 // Logout
-app.get("/log-out", (req, res, nex) => {
+app.get("/log-out", (req, res, next) => {
     req.logout((err) => {
         if (err) {
             return next(err);
