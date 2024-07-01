@@ -109,7 +109,7 @@ app.use('/', messagesRouter);
 
 // Login Route
 app.get('/log-in', csrfProtection, (req, res) => {
-    res.render('login', { csrfToken: req.csrfToken });
+    res.render('login', { csrfToken: req.csrfToken() });
 })
 
 app.post(
