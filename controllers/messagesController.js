@@ -1,12 +1,16 @@
 const Messages = require('../models/messages');
 const { body, validationResult } = require('express-validator');
+const sanitizeHtml = require('sanitize-html');
 
 // Middleware zur Nachrichtenvalidierung
 exports.validateMessage = [
     body('text', 'Text must not be empty.')
         .trim()
         .isLength({ min: 1, max: 500 })
-        .escape(),
+        .customSanitizer(value => sanitizeHtml(value, {
+            allowedTags: [],
+            allowedAttributes: {}
+        })),
 ];
 
 // Nachrichten abrufen
